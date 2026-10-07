@@ -55,6 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- README install section replaced by a generated `DIST-STATUS` banner stating the tool is source-only (no PyPI release yet) and offering both `pipx` and `uv` source installs.
+
 - `ab-run --task/--repo` is now the deprecated two-session "simple
   mode"; the G3 suite harness is the default `ab-run` path (requires
   `--evals`, tasks defaulting to `<evals>/tasks`).
