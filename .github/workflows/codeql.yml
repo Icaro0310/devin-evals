@@ -1,5 +1,8 @@
 name: CodeQL
 
+# Thin caller: the analyze job lives in the control plane
+# (Icaro0310/devin-powerups/.github/workflows/codeql.yml @v1).
+
 on:
   push:
     branches: [main]
@@ -15,17 +18,8 @@ permissions:
 
 jobs:
   analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [python]
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@1190a975f95ce23525efb6a3fc21ea29567c1b52 # v3
-        with:
-          languages: ${{ matrix.language }}
-      - name: Perform analysis
-        uses: github/codeql-action/analyze@1190a975f95ce23525efb6a3fc21ea29567c1b52 # v3
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    uses: Icaro0310/devin-powerups/.github/workflows/codeql.yml@v1
