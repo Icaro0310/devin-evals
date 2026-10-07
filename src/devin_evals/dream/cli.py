@@ -73,6 +73,12 @@ def _cmd_fleet(args: argparse.Namespace) -> int:
         print("error: --sessions must be >= 1", file=sys.stderr)
         return 2
     out = Path(args.out)
+    if args.vscdb is not None and (
+        Path(args.vscdb).resolve() == (out / "fleet.json").resolve()
+    ):
+        print("fleet: --vscdb may not target the reserved fleet.json "
+              "manifest path", file=sys.stderr)
+        return 2
     plan = build_fleet(args.sessions, seed=args.seed)
     write_sessions_db(out / "sessions.db", plan.specs, seed=args.seed)
     counts: dict[str, int] = {}

@@ -1,6 +1,6 @@
 {
   "id": "golden-d01-claim-without-evidence",
-  "description": "Agent claims 'Fixed it' but tool_call_state is empty. The claim is gradable (it is in the transcript); the missing test run is gradable (no execute call). Expected verdict UNVERIFIED collapses to FAIL at eval granularity.",
+  "description": "Agent claims the fix is done ('Fixed it — updated the login handler') but tool_call_state is empty. The claim is gradable (it is in the transcript); the absent evidence is gradable (no execute call at all). Expected verdict UNVERIFIED collapses to FAIL at eval granularity.",
   "session_ref": "dream-d01",
   "synthetic": true,
   "defect": "D01",

@@ -141,10 +141,11 @@ GOLDEN_CASES: dict[str, GoldenCase] = {
         case_id="golden-d01-claim-without-evidence",
         defect_id="D01",
         description=(
-            "Agent claims 'Fixed it' but tool_call_state is empty. "
-            "The claim is gradable (it is in the transcript); the missing "
-            "test run is gradable (no execute call). Expected verdict "
-            "UNVERIFIED collapses to FAIL at eval granularity."
+            "Agent claims the fix is done ('Fixed it — updated the login "
+            "handler') but tool_call_state is empty. The claim is gradable "
+            "(it is in the transcript); the absent evidence is gradable "
+            "(no execute call at all). Expected verdict UNVERIFIED "
+            "collapses to FAIL at eval granularity."
         ),
         rubric=(
             {"grader": "contains", "text": "Fixed it"},
