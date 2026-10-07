@@ -1,6 +1,6 @@
 {
   "tool": "devin-evals corpus",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "seed": 57060,
   "generator": "dream",
   "synthetic_only": true,
