@@ -61,7 +61,7 @@ and exited 0" — a fact, not an LLM judgement call.
 
 ## Install
 
-Python ≥ 3.10 and `pipx` are required. **Windows (PowerShell):** install `pipx` with `py -m pip install --user pipx`, run `py -m pipx ensurepath`, then reopen the terminal. **Linux (Debian/Ubuntu):** run `sudo apt install pipx python3-venv` and `pipx ensurepath`; reopen the terminal. Other Linux distributions should install `pipx` using their package manager.
+Requires Python ≥ 3.10 and `pipx` or `uv`. Per-OS setup lives in the platform guides: [Linux](README.linux.md) · [Personal Windows](README.windows.md) · [Corporate Windows](README.corporate-windows.md).
 
 <!-- DIST-STATUS:BEGIN — generated from devin-powerups/registry.json -->
 > **Source-only distribution.** This tool is not yet published to PyPI.
@@ -76,8 +76,7 @@ Python ≥ 3.10 and `pipx` are required. **Windows (PowerShell):** install `pipx
 
 From a checkout: `pip install -e .`
 
-Requires Python ≥3.10. Runtime deps: `devin-internals-spec` only — no
-network, no LLM calls.
+Runtime deps: `devin-internals-spec` only — no network, no LLM calls.
 
 ## Usage
 
