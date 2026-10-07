@@ -48,8 +48,15 @@ def write_sessions_db(
     uses it — one drifted DB per defect dir).
     """
     path = Path(path)
-    if specs and specs[0].schema_version_override:
-        schema_version = specs[0].schema_version_override
+    overrides = {
+        s.schema_version_override for s in specs
+        if s.schema_version_override is not None
+    }
+    if len(overrides) > 1:
+        raise ValueError(
+            f"conflicting schema_version_override values: {sorted(overrides)}")
+    if overrides:
+        schema_version = overrides.pop()
     version = schema_version or LATEST_KNOWN_SCHEMA
 
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -468,7 +475,8 @@ def write_state_vscdb(path: str | Path, plan: FleetPlan, *,
             )
             rts.setdefault(b.space_id, []).append(
                 f"{_EDITOR_URI_PREFIX}{b.backend}/{b.slug}")
-            meta[b.space_id] = {"lastAccessed": b.last_accessed}
+            m = meta.setdefault(b.space_id, {"lastAccessed": 0})
+            m["lastAccessed"] = max(m["lastAccessed"], b.last_accessed)
         con.execute(
             "INSERT INTO ItemTable(key, value) VALUES (?, ?)",
             (RESOURCE_TO_SPACE, json.dumps(rts)))

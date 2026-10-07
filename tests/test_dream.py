@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from devin_evals.dream.cli import main
-from devin_evals.dream.defects import DEFECTS, UNIT_IDS
+from devin_evals.dream.defects import DEFECTS, FAKE_AWS_KEY, UNIT_IDS
 from devin_evals.dream.generate import ARCHETYPES
 from devin_internals.commits import commit_references
 from devin_internals.parsers import SessionsStore, StateVscdbStore
@@ -42,7 +42,7 @@ def test_d04_carries_fake_secret_in_tool_output(tmp_path):
     with SessionsStore(out / "d04" / "sessions.db") as st:
         tcs = st.tool_call_state()
     blob = tcs[0].tool_call_update_json
-    assert "AKIAIOSFODNN7EXAMPLE" in blob
+    assert FAKE_AWS_KEY in blob
 
 
 def test_d09_splits_secret_across_calls(tmp_path):

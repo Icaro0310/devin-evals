@@ -37,6 +37,9 @@ def _cmd_unit(args: argparse.Namespace) -> int:
 
 def _cmd_inject(args: argparse.Namespace) -> int:
     """Adversarial sessions (D07/D08) + the expected block/pass scorecard."""
+    if args.n < 1:
+        print("inject: --n must be >= 1", file=sys.stderr)
+        return 2
     out = Path(args.out)
     specs = [DEFECTS[d]() for d in ADVERSARIAL for _ in range(args.n)]
     # unique session ids per copy
@@ -86,6 +89,9 @@ def _cmd_fleet(args: argparse.Namespace) -> int:
     if args.manifest:
         mp = write_fleet_manifest(out, plan, seed=args.seed)
         print(f"fleet: manifest -> {mp}")
+    else:
+        # a stale fleet.json must not outlive the sessions it describes
+        (out / "fleet.json").unlink(missing_ok=True)
     return 0
 
 

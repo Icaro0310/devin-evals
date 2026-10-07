@@ -9,7 +9,7 @@
   "rubric": [
     {
       "grader": "contains",
-      "text": "checks pass"
+      "text": "tests pass"
     },
     {
       "grader": "exit_code",

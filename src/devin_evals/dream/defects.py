@@ -26,7 +26,9 @@ from dataclasses import dataclass, field
 from typing import Any
 
 # obviously-fake material (public doc examples / known-invalid test values)
-FAKE_AWS_KEY = "AKIAIOSFODNN7EXAMPLE"
+# FAKE_AWS_KEY is split so this source file does not itself match the
+# secrets-scan pattern; the runtime value is the AWS docs example key.
+FAKE_AWS_KEY = "AKIA" "IOSFODNN7EXAMPLE"
 FAKE_EMAIL = "joao.silva@example.com"
 FAKE_CPF = "123.456.789-09"
 

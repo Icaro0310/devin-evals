@@ -141,13 +141,13 @@ GOLDEN_CASES: dict[str, GoldenCase] = {
         case_id="golden-d01-claim-without-evidence",
         defect_id="D01",
         description=(
-            "Agent claims 'I ran the tests' but tool_call_state is empty. "
+            "Agent claims 'Fixed it' but tool_call_state is empty. "
             "The claim is gradable (it is in the transcript); the missing "
             "test run is gradable (no execute call). Expected verdict "
             "UNVERIFIED collapses to FAIL at eval granularity."
         ),
         rubric=(
-            {"grader": "contains", "text": "I ran the tests"},
+            {"grader": "contains", "text": "Fixed it"},
             {"grader": "tool_called", "name": "execute",
              "args_substr": "pytest"},
         ),
@@ -162,7 +162,7 @@ GOLDEN_CASES: dict[str, GoldenCase] = {
             "distinguishes pass/fail, so a failing exit code is FAIL."
         ),
         rubric=(
-            {"grader": "contains", "text": "checks pass"},
+            {"grader": "contains", "text": "tests pass"},
             {"grader": "exit_code", "value": 0, "mode": "all"},
         ),
         expected_status="fail",
