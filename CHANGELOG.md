@@ -58,3 +58,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ab-run --task/--repo` is now the deprecated two-session "simple
   mode"; the G3 suite harness is the default `ab-run` path (requires
   `--evals`, tasks defaulting to `<evals>/tasks`).
+- `llms.txt` no longer states a hard-coded ecosystem size; the registry owns the count.
