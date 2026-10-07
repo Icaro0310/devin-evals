@@ -168,26 +168,38 @@ Pack checks run **before** the case's own checks. List them with
 `devin-evals packs`; override or add your own with `--packs-dir <dir>`
 (a `<name>.json` file there shadows the built-in of the same name).
 
+### Synthetic sessions (`dream`)
+
+The `dream` subgroup generates synthetic Devin sessions with known
+verdicts — regression and adversarial fixtures. This was the standalone
+`devin-dream` repository, absorbed into this package:
+
+```bash
+devin-evals dream unit   --out out/                 # one dir per defect + expected.json
+devin-evals dream unit   --out out/ --defect D01 D03
+devin-evals dream inject --out adv/ --n 5           # adversarial (D07/D08) + scorecard
+devin-evals dream fleet  --out big/ --sessions 2000 --seed 1 --manifest
+```
+
+Secrets and PII in generated fixtures are always obviously fake
+public-documentation values — nothing real is ever generated or read.
+
 ### Golden corpus (EV-3)
 
 `devin-evals corpus` materializes and replays a deterministic corpus of
-**labeled synthetic sessions** — nine defect classes (D01–D09, the same
-catalogue as [devin-dream](https://github.com/Icaro0310/devin-dream)) with
-a known verdict each — plus the matching `evals/*.json` cases whose
-rubrics encode those verdicts in gradable form. It is the CI gate that
-proves evals, fixtures and graders agree:
+**labeled synthetic sessions** — nine defect classes (D01–D09, generated
+by `devin_evals.dream`, the absorbed devin-dream catalogue) with a known
+verdict each — plus the matching `evals/*.json` cases whose rubrics
+encode those verdicts in gradable form. It is the CI gate that proves
+evals, fixtures and graders agree:
 
 ```bash
 devin-evals corpus generate --out .corpus   # sessions.db + evals/ + corpus.json
 devin-evals corpus verify  --corpus .corpus # expected-vs-actual per case
 ```
 
-`generate` imports `devin_dream.defects` when the package is importable
-(`PYTHONPATH=../devin-dream/src`, or `--generator dream` to require it);
-otherwise it uses the vendored copy in `devin_evals._vendored_dream` —
-both produce identical corpora. `--generator vendored` forces the bundled
-copy. Everything is deterministic given `--seed` and **synthetic only**:
-the corpus must never point at a real `sessions.db`.
+Everything is deterministic given `--seed` and **synthetic only**: the
+corpus must never point at a real `sessions.db`.
 
 The corpus is also **versioned** in the repo: `corpus/evals/*.json` and
 `corpus/corpus.json` are committed, while the `sessions*.db` files are

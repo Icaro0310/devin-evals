@@ -387,7 +387,7 @@ def _cmd_run(args: argparse.Namespace) -> int:
 def _cmd_corpus_generate(args: argparse.Namespace) -> int:
     try:
         manifest = generate_corpus(
-            args.out, seed=args.seed, generator=args.generator)
+            args.out, seed=args.seed)
     except (CaseError, SchemaError, OSError, RuntimeError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return _USAGE
@@ -547,11 +547,6 @@ def build_parser() -> argparse.ArgumentParser:
     cg.add_argument(
         "--seed", type=int, default=0xDEE4,
         help="deterministic seed (default: 0xDEE4)")
-    cg.add_argument(
-        "--generator", choices=("auto", "dream", "vendored"),
-        default="auto",
-        help="session source: import devin_dream when available, else the "
-        "vendored copy (default: auto)")
     cg.set_defaults(func=_cmd_corpus_generate)
 
     cv = csub.add_parser(
@@ -567,6 +562,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--out",
         help="optional output directory for verify-report.json")
     cv.set_defaults(func=_cmd_corpus_verify)
+
+    dre = sub.add_parser(
+        "dream",
+        help="generate synthetic sessions with known verdicts (absorbed devin-dream)")
+    from devin_evals.dream.cli import add_dream_subcommands
+    add_dream_subcommands(dre.add_subparsers(dest="dream_command", required=True))
     return p
 
 

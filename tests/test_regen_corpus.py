@@ -54,7 +54,7 @@ def test_committed_corpus_cases_load():
 def test_committed_manifest_is_seeded_and_synthetic():
     manifest = json.loads((CORPUS / "corpus.json").read_text(encoding="utf-8"))
     assert manifest["synthetic_only"] is True
-    assert manifest["generator"] == "vendored"  # pinned for reproducibility
+    assert manifest["generator"] == "dream"
     assert manifest["seed"] == 0xDEE4
     assert len(manifest["cases"]) == 9
 

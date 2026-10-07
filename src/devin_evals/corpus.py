@@ -16,10 +16,9 @@
 expected-vs-actual per case — the CI gate that proves evals, fixtures and
 graders agree.
 
-Session content comes from ``devin_dream.defects`` when that package is
-importable (sibling checkout or installed); otherwise the vendored copy in
-:mod:`devin_evals._vendored_dream` is used. Both produce identical corpora —
-the vendored copy exists so public CI never needs the sibling repo.
+Session content comes from :mod:`devin_evals.dream.defects` — the defect
+catalogue absorbed from the standalone ``devin-dream`` repository (P4
+merge); there is no separate generator package anymore.
 
 Everything here is synthetic by construction; the corpus must never point
 at a real ``sessions.db``.
@@ -29,7 +28,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -37,10 +36,35 @@ from devin_internals.fixtures import create_sessions_db
 from devin_internals.schema import SchemaError
 from devin_internals.parsers.sessions import SessionsStore
 
-from devin_evals import __version__, _vendored_dream
-from devin_evals._vendored_dream import CorpusSpec, CorpusToolCall
+from devin_evals import __version__
+from devin_evals.dream.defects import DEFECTS as DREAM_DEFECTS
 from devin_evals.cases import load_cases
 from devin_evals.runner import evaluate_case
+
+
+@dataclass(frozen=True)
+class CorpusToolCall:
+    tool_call_id: str
+    call: dict[str, Any]
+    update: dict[str, Any] | None
+
+
+@dataclass(frozen=True)
+class CorpusSpec:
+    """One synthetic session: message rows + tool-call rows + verdicts."""
+
+    defect_id: str
+    session_id: str
+    title: str
+    working_directory: str
+    model: str
+    agent_mode: str
+    messages: tuple[tuple[str, str], ...]  # (role, raw chat_message JSON blob)
+    tool_calls: tuple[CorpusToolCall, ...] = ()
+    expected: dict[str, str] = field(default_factory=dict)
+    schema_version_override: int | None = None
+    labels: tuple[str, ...] = ("synthetic",)
+
 
 DEFAULT_SEED = 0xDEE4
 MANIFEST_NAME = "corpus.json"
@@ -56,24 +80,16 @@ VALID_EXPECTED = ("pass", "fail", "skip", "error")
 
 
 # ---------------------------------------------------------------------------
-# Spec loading — prefer devin_dream, fall back to the vendored copy
+# Spec loading — devin_evals.dream is the single generator (absorbed
+# devin-dream defect catalogue)
 # ---------------------------------------------------------------------------
 
 
-def _dream_specs() -> list[CorpusSpec] | None:
-    """Adapt ``devin_dream.defects`` specs to the local CorpusSpec shape.
-
-    Returns ``None`` when devin_dream is not importable. Import errors are
-    the only thing swallowed — if the dream API drifts (missing defects,
-    renamed fields) the failure stays loud.
-    """
-    try:
-        from devin_dream.defects import DEFECTS as dream_defects
-    except ImportError:
-        return None
+def corpus_specs() -> list[CorpusSpec]:
+    """Adapt ``devin_evals.dream.defects`` specs to the CorpusSpec shape."""
     specs: list[CorpusSpec] = []
     for did in DEFECT_ORDER:
-        s = dream_defects[did]()
+        s = DREAM_DEFECTS[did]()
         specs.append(
             CorpusSpec(
                 defect_id=s.defect_id,
@@ -97,26 +113,6 @@ def _dream_specs() -> list[CorpusSpec] | None:
             )
         )
     return specs
-
-
-def corpus_specs(generator: str = "auto") -> tuple[list[CorpusSpec], str]:
-    """Return ``(specs, source)`` — source is ``devin_dream`` or ``vendored``.
-
-    ``generator`` is ``auto`` (prefer the import), ``dream`` (require the
-    import) or ``vendored`` (force the bundled copy).
-    """
-    if generator not in ("auto", "dream", "vendored"):
-        raise ValueError(f"unknown generator {generator!r}")
-    if generator != "vendored":
-        specs = _dream_specs()
-        if specs is not None:
-            return specs, "devin_dream"
-    if generator == "dream":
-        raise RuntimeError(
-            "devin_dream is not importable — install it or add its src/ "
-            "to PYTHONPATH, or use generator='vendored'"
-        )
-    return [_vendored_dream.DEFECTS[d]() for d in DEFECT_ORDER], "vendored"
 
 
 # ---------------------------------------------------------------------------
@@ -399,10 +395,9 @@ def generate_corpus(
     out_dir: str | Path,
     *,
     seed: int = DEFAULT_SEED,
-    generator: str = "auto",
 ) -> dict[str, Any]:
     """Materialize the golden corpus under ``out_dir``; return the manifest."""
-    specs, source = corpus_specs(generator)
+    specs = corpus_specs()
     out = Path(out_dir)
     evals_dir = out / EVALS_DIRNAME
     evals_dir.mkdir(parents=True, exist_ok=True)
@@ -446,7 +441,7 @@ def generate_corpus(
         "tool": "devin-evals corpus",
         "version": __version__,
         "seed": seed,
-        "generator": source,
+        "generator": "dream",
         "synthetic_only": True,
         "evals_dir": EVALS_DIRNAME,
         "sessions_db": DEFAULT_DB_NAME,

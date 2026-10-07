@@ -13,13 +13,10 @@ Usage::
                                              # corpus != regenerated output
     python tools/regen-corpus.py --verify    # rebuild, then run corpus verify
 
-Determinism: the recorded ``seed``/``generator`` in ``corpus/corpus.json``
-are reused, so a rebuild is byte-identical unless the generator code or
-the defect catalogue changed — which is exactly what ``--check`` catches.
-The committed corpus is pinned to the ``vendored`` generator so the check
-is reproducible anywhere (``devin_dream`` is not an install dependency);
-pass ``--generator dream`` explicitly to regenerate from a checkout of
-devin-dream instead.
+Determinism: the recorded ``seed`` in ``corpus/corpus.json`` is reused,
+so a rebuild is byte-identical unless the generator code or the defect
+catalogue changed — which is exactly what ``--check`` catches. The
+generator is ``devin_evals.dream`` (absorbed from devin-dream in P4).
 """
 
 from __future__ import annotations
@@ -44,24 +41,19 @@ from devin_evals.corpus import (  # noqa: E402
 )
 
 DEFAULT_CORPUS_DIR = REPO_ROOT / "corpus"
-DEFAULT_GENERATOR = "vendored"
 
 
-def _recorded(corpus_dir: Path) -> tuple[int, str]:
-    """Seed + generator recorded in the committed manifest (if present)."""
+def _recorded_seed(corpus_dir: Path) -> int:
+    """Seed recorded in the committed manifest (if present)."""
     manifest_path = corpus_dir / MANIFEST_NAME
     if not manifest_path.is_file():
-        return DEFAULT_SEED, DEFAULT_GENERATOR
+        return DEFAULT_SEED
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
-        return DEFAULT_SEED, DEFAULT_GENERATOR
+        return DEFAULT_SEED
     seed = manifest.get("seed")
-    generator = manifest.get("generator")
-    return (
-        seed if isinstance(seed, int) else DEFAULT_SEED,
-        generator if isinstance(generator, str) else DEFAULT_GENERATOR,
-    )
+    return seed if isinstance(seed, int) else DEFAULT_SEED
 
 
 def _text_artifacts(corpus_dir: Path) -> dict[str, bytes]:
@@ -90,21 +82,21 @@ def _clean(corpus_dir: Path) -> None:
         p.unlink()
 
 
-def regenerate(corpus_dir: Path, seed: int, generator: str) -> dict:
+def regenerate(corpus_dir: Path, seed: int) -> dict:
     """Rebuild the corpus in place; return the manifest."""
     corpus_dir.mkdir(parents=True, exist_ok=True)
     _clean(corpus_dir)
-    return generate_corpus(corpus_dir, seed=seed, generator=generator)
+    return generate_corpus(corpus_dir, seed=seed)
 
 
-def check(corpus_dir: Path, seed: int, generator: str) -> list[str]:
+def check(corpus_dir: Path, seed: int) -> list[str]:
     """Diff committed text artifacts against a fresh regeneration."""
     committed = _text_artifacts(corpus_dir)
     if not committed:
         return [f"{corpus_dir}: no committed corpus found — "
                 f"run {Path(__file__).name} first"]
     with tempfile.TemporaryDirectory(prefix="devin-evals-corpus-") as tmp:
-        generate_corpus(tmp, seed=seed, generator=generator)
+        generate_corpus(tmp, seed=seed)
         regenerated = _text_artifacts(Path(tmp))
     drift: list[str] = []
     for name in sorted(set(committed) | set(regenerated)):
@@ -130,9 +122,6 @@ def main(argv: list[str] | None = None) -> int:
         "--seed", type=int, default=None,
         help="override the seed recorded in corpus.json")
     ap.add_argument(
-        "--generator", choices=("auto", "dream", "vendored"), default=None,
-        help="override the generator recorded in corpus.json")
-    ap.add_argument(
         "--check", action="store_true",
         help="do not write; fail if the committed corpus diverges from "
         "regenerated output (CI gate)")
@@ -142,13 +131,11 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     corpus_dir = args.corpus_dir.resolve()
-    rec_seed, rec_gen = _recorded(corpus_dir)
-    seed = args.seed if args.seed is not None else rec_seed
-    generator = args.generator or rec_gen
+    seed = args.seed if args.seed is not None else _recorded_seed(corpus_dir)
 
     if args.check:
         try:
-            drift = check(corpus_dir, seed, generator)
+            drift = check(corpus_dir, seed)
         except (OSError, RuntimeError, ValueError) as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2
@@ -161,16 +148,16 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         n = len(_text_artifacts(corpus_dir))
         print(f"corpus OK: {n} committed file(s) match regenerated output "
-              f"(seed={seed}, generator={generator})")
+              f"(seed={seed})")
         return 0
 
     try:
-        manifest = regenerate(corpus_dir, seed, generator)
+        manifest = regenerate(corpus_dir, seed)
     except (OSError, RuntimeError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
     print(f"regenerated {len(manifest['cases'])} golden case(s) in "
-          f"{corpus_dir} (seed={seed}, generator={generator})")
+          f"{corpus_dir} (seed={seed})")
 
     if args.verify:
         report = verify_corpus(corpus_dir)

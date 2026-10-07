@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `dream` subcommand group (`devin-evals dream unit|inject|fleet`) —
+  absorbs the standalone `devin-dream` repository: deterministic synthetic
+  Devin sessions with known verdicts (defects D01–D09).
 - `ab-run` G3 harness (EV-5 v2) — preregistered A/B suite over a tasks
   manifest dir (≥5 trigger + ≥3 control, `<evals>/tasks` or `--tasks`),
   k attempts per arm (`--attempts`, min 3), seeded ABBA/BAAB
@@ -52,6 +55,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `evals/` — three sample cases (pass, intentionally-fail, tool-call).
 - `docs/SPEC.md`, `STATUS.md`, real bilingual READMEs; 62 tests.
 - Initial scaffold from `devin-repo-template`.
+
+### Removed
+
+- `devin_evals._vendored_dream` fallback and the `corpus generate
+  --generator` flag — `devin_evals.dream` is the single generator now.
 
 ### Changed
 

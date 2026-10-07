@@ -30,8 +30,7 @@ jobs:
 
   corpus:
     # Golden-case gate (EV-3): generated fixtures only — never real sessions.
-    # devin_dream is not published/depended on, so this exercises the
-    # vendored generator; a local checkout can re-run with --generator dream.
+    # The generator is devin_evals.dream (devin-dream absorbed in P4).
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4

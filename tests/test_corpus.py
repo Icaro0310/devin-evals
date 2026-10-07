@@ -15,7 +15,6 @@ import pytest
 from devin_internals.schema import UnknownSchemaVersionError
 from devin_internals.parsers.sessions import SessionsStore
 
-from devin_evals import _vendored_dream
 from devin_evals.cases import load_cases
 from devin_evals.cli import main
 from devin_evals.corpus import (
@@ -58,45 +57,16 @@ def test_generate_layout_and_loadable_cases(corpus_dir: Path):
 def test_manifest_is_synthetic_and_seeded(corpus_dir: Path):
     manifest = json.loads((corpus_dir / "corpus.json").read_text())
     assert manifest["synthetic_only"] is True
-    assert manifest["generator"] in ("vendored", "devin_dream")
+    assert manifest["generator"] == "dream"
     assert isinstance(manifest["seed"], int)
     assert len(manifest["cases"]) == 9
     assert set(manifest["known_gaps"]) == EXPECTED_GAPS
 
 
-def test_vendored_specs_cover_all_defects():
-    specs, source = corpus_specs("vendored")
-    assert source == "vendored"
+def test_dream_specs_cover_all_defects():
+    specs = corpus_specs()
     assert [s.defect_id for s in specs] == list(DEFECT_ORDER)
     assert sum(1 for s in specs if s.schema_version_override) == 1  # D06
-
-
-@pytest.mark.skipif(
-    importlib.util.find_spec("devin_dream") is None,
-    reason="devin_dream not importable (vendored fallback in use)",
-)
-def test_dream_and_vendored_specs_agree():
-    """The vendored copy must produce the same corpus as devin_dream."""
-    dream, src = corpus_specs("dream")
-    assert src == "devin_dream"
-    vendored, _ = corpus_specs("vendored")
-    for d, v in zip(dream, vendored):
-        assert d.defect_id == v.defect_id
-        assert d.session_id == v.session_id
-        assert d.title == v.title
-        assert d.messages == v.messages
-        assert d.expected == v.expected
-        assert d.schema_version_override == v.schema_version_override
-        assert [(t.tool_call_id, t.call, t.update) for t in d.tool_calls] == [
-            (t.tool_call_id, t.call, t.update) for t in v.tool_calls
-        ]
-
-
-def test_dream_generator_required_raises_without_package():
-    if importlib.util.find_spec("devin_dream") is not None:
-        pytest.skip("devin_dream is importable here")
-    with pytest.raises(RuntimeError, match="devin_dream"):
-        corpus_specs("dream")
 
 
 # -- determinism -------------------------------------------------------------
@@ -227,9 +197,8 @@ def test_cli_verify_missing_corpus_returns_2(tmp_path: Path, capsys):
     assert "not a generated corpus" in capsys.readouterr().err
 
 
-def test_cli_generate_vendored_forced(tmp_path: Path, capsys):
+def test_cli_generate_uses_absorbed_dream(tmp_path: Path, capsys):
     out = tmp_path / "c"
-    rc = main(["corpus", "generate", "--out", str(out),
-               "--generator", "vendored"])
+    rc = main(["corpus", "generate", "--out", str(out)])
     assert rc == 0
-    assert "generator=vendored" in capsys.readouterr().out
+    assert "generator=dream" in capsys.readouterr().out

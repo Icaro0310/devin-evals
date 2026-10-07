@@ -2,7 +2,7 @@
   "tool": "devin-evals corpus",
   "version": "0.1.0",
   "seed": 57060,
-  "generator": "vendored",
+  "generator": "dream",
   "synthetic_only": true,
   "evals_dir": "evals",
   "sessions_db": "sessions.db",
