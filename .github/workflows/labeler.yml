@@ -1,7 +1,8 @@
 name: pr-labeler
 
-# Auto-labels pull requests by which paths they touch. Runs on
-# pull_request_target so labels also apply to PRs from forks.
+# Thin caller: the label job lives in the control plane
+# (Icaro0310/devin-powerups/.github/workflows/labeler.yml @v1).
+# This runs on pull_request_target — never check out PR code here.
 
 on:
   pull_request_target:
@@ -13,8 +14,4 @@ permissions:
 
 jobs:
   label:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+    uses: Icaro0310/devin-powerups/.github/workflows/labeler.yml@v1
