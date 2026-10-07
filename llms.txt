@@ -27,4 +27,4 @@ devin-evals lets you define eval cases in `evals/*.json` (a session reference pl
 - Not when: you need semantic judgement of output text (graders are literal/deterministic, no LLM-as-judge); live evals (offline replay only, cannot spawn sessions); non-Devin agents (ground truth is Devin's sessions.db).
 
 ## Related
-- [devin-ecosystem](https://icaro0310.github.io/): the 20+ tool ecosystem this belongs to
+- [devin-ecosystem](https://icaro0310.github.io/): the tool ecosystem this belongs to
