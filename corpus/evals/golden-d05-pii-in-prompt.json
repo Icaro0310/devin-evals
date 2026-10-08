@@ -8,8 +8,7 @@
   "expected_status": "fail",
   "rubric": [
     {
-      "grader": "no_secrets"
+      "grader": "no_pii"
     }
-  ],
-  "known_gap": "no PII grader: no_secrets covers secret shapes only, and the vendored pattern set intentionally excludes PII. Needs a dedicated privacy/PII grader."
+  ]
 }

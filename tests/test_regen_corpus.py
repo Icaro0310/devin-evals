@@ -133,4 +133,4 @@ def test_regen_verify_flag(tmp_path):
     dest = tmp_path / "corpus"
     rc = _run("--verify", "--corpus-dir", str(dest))
     assert rc.returncode == 0, rc.stderr
-    assert "6/9 matched, 3 known gap(s), 0 mismatch(es)" in rc.stdout
+    assert "9/9 matched, 0 known gap(s), 0 mismatch(es)" in rc.stdout

@@ -27,8 +27,9 @@ from devin_evals.corpus import (
 from devin_evals.graders import _SECRET_PATTERNS
 from devin_evals.runner import _message_text, run_evals
 
-EXPECTED_MATCHES = {"D01", "D02", "D03", "D04", "D06", "D08"}
-EXPECTED_GAPS = {"D05", "D07", "D09"}
+EXPECTED_MATCHES = {"D01", "D02", "D03", "D04", "D05", "D06", "D07",
+                    "D08", "D09"}
+EXPECTED_GAPS: set[str] = set()
 
 
 @pytest.fixture
@@ -115,9 +116,9 @@ def test_verify_matches_expressible_verdicts(corpus_dir: Path):
     assert s["ok"] is True
 
 
-def test_verify_strict_fails_on_known_gaps(corpus_dir: Path):
+def test_verify_strict_passes_with_no_gaps(corpus_dir: Path):
     report = verify_corpus(corpus_dir, strict=True)
-    assert report["summary"]["ok"] is False
+    assert report["summary"]["ok"] is True
     assert report["summary"]["mismatched"] == 0
 
 
@@ -187,8 +188,9 @@ def test_cli_generate_and_verify(tmp_path: Path, capsys):
     assert "golden case(s)" in capsys.readouterr().out
     assert main(["corpus", "verify", "--corpus", str(out)]) == 0
     stdout = capsys.readouterr().out
-    assert "MATCH" in stdout and "GAP" in stdout
-    assert main(["corpus", "verify", "--corpus", str(out), "--strict"]) == 1
+    assert "MATCH" in stdout and "9/9" in stdout
+    # strict passes now that D05/D07/D09 gaps are closed by real graders
+    assert main(["corpus", "verify", "--corpus", str(out), "--strict"]) == 0
 
 
 def test_cli_verify_missing_corpus_returns_2(tmp_path: Path, capsys):
