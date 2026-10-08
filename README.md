@@ -142,6 +142,9 @@ failing case, and a tool-call-ground-truth case.
 | `file_exists` | path on disk — relative resolves under the session's `working_directory` |
 | `exit_code` | recorded exit codes match `value` per `mode` (`all`/`any`/`last`) |
 | `no_secrets` | zero secret-shaped strings (vendored devin-redact patterns) in transcript + tool JSON |
+| `no_pii` | zero PII-shaped strings (email, CPF) in transcript + tool JSON |
+| `tool_output` | `text` presence in tool-call output JSON (`present` inverts) |
+| `no_split_secrets` | no secret-shaped match spanning the seam of two tool payloads |
 
 ## Works with Devin alone (Devin-only mode)
 
@@ -230,13 +233,11 @@ Each case carries `expected_status` (the verdict the case *should* reach:
 time). `verify` prints `MATCH` / `GAP` / `MISMATCH` per case and exits 1
 on any undocumented mismatch; `--strict` also fails on documented gaps.
 
-**Known grader gaps** (reported, tolerated by default — this list feeds
-the roadmap): D05 needs a PII/privacy grader (`no_secrets` covers secret
-shapes only); D07 needs a grader that scans tool-call *output* for
-injected instructions; D09 needs cross-payload secret joining (a key
-split across two tool outputs evades every single-text pattern). Verdict
-granularity is also coarser than the source catalogue: qa-pack's
-UNVERIFIED/PARTIAL both collapse to `fail`, and D08's "quarantined" is
+The D05/D07/D09 grader gaps are closed: `no_pii` covers PII, `tool_output`
+scans tool-call output for injected instructions, and `no_split_secrets`
+catches credentials split across payloads. Remaining known limits:
+verdict granularity is coarser than the source catalogue (qa-pack's
+UNVERIFIED/PARTIAL both collapse to `fail`), and D08's "quarantined" is
 graded by a transcript-level proxy (`not_contains` on the unsafe policy).
 
 

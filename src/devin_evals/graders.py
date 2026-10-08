@@ -265,7 +265,7 @@ def _no_split_secrets(ev: Evidence, p: dict[str, Any]) -> tuple[bool, str]:
     found: list[str] = []
     for i, tail_runs in enumerate(tails):
         for j, head_runs in enumerate(heads):
-            if i == j:
+            if j <= i:  # forward pairs only — a later fragment joins an earlier one
                 continue
             for tail in tail_runs:
                 for head in head_runs:
