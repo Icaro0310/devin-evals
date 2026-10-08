@@ -1,4 +1,7 @@
 name: ci
+# Intentionally NOT a thin caller: Extra corpus gate job (EV-3) and secrets-scan fixture exclusions.
+# See Icaro0310/devin-powerups .github/workflows/VARIANTS.md.
+
 
 on:
   push:
