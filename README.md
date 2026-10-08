@@ -16,6 +16,14 @@
 <a href="https://github.com/Icaro0310/devin-evals/issues"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome"/></a>
 </div>
 
+<!-- DEVIN-ECO:BEGIN -->
+> **Part of the [DEVIN ecosystem](https://github.com/Icaro0310/awesome-devin)**
+> Track: Verify · Nature: product
+> For: QA engineers, AI engineers
+> Interface: CLI / Python library
+<!-- DEVIN-ECO:END -->
+
+
 # devin-evals
 
 > **Unofficial community project.** Not affiliated with, endorsed by, or
