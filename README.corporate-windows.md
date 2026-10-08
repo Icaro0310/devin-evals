@@ -36,7 +36,7 @@ Use the tool's documented `--data-dir` or `--config-dir` flags for non-default l
 - **Blocked installers:** if winget/Store are disabled by policy, `uv` installs as a standalone binary — download the GitHub release zip, extract to `%LOCALAPPDATA%\bin`, add it to PATH.
 - **Long paths:** keep checkout/install roots short (`C:\dev`) — MAX_PATH (260 chars) can still bite inside virtualenvs; `LongPathsEnabled` needs admin, short roots do not.
 - **EDR/antivirus:** if a scan kills the install, retry with an exclusion or ask IT to allowlist `%LOCALAPPDATA%\uv` and `%USERPROFILE%\.local\bin`. These tools never elevate or listen on the network by default.
-- **Offline/air-gapped:** `pip download <package> -d wheels\` on a connected machine, copy the folder, then `pip install --no-index --find-links wheels\` on the target (pure-Python tools; native deps need a matching platform wheel).
+- **Offline/air-gapped:** `pip download <package> -d wheels\` on a connected machine, copy the folder, then `pip install --no-index --find-links wheels\` on the target (pure-Python tools; native deps need a matching platform wheel). For `source_only` tools installed from a copied checkout, stage the build backend too (`pip download setuptools wheel`), then install with `pip install --no-index --find-links wheels\ --no-build-isolation .` inside the checkout.
 
 ## Troubleshooting
 
