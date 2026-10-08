@@ -15,6 +15,11 @@
       "grader": "tool_called",
       "name": "execute",
       "args_substr": "pytest"
+    },
+    {
+      "grader": "regex",
+      "text": "\\d+ passed",
+      "present": true
     }
   ],
   "packs": [

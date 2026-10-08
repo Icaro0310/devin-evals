@@ -57,6 +57,17 @@ def test_d09_splits_secret_across_calls(tmp_path):
     assert FAKE_AWS_KEY[:10] in joined and FAKE_AWS_KEY[10:] in joined
 
 
+def test_d10_claims_docs_but_writes_code(tmp_path):
+    out = tmp_path / "u"
+    main(["unit", "--out", str(out), "--defect", "D10"])
+    with SessionsStore(out / "d10" / "sessions.db") as st:
+        tcs = st.tool_call_state()
+    assert tcs  # real tool activity — unlike D01
+    blobs = " ".join(tc.tool_call_json or "" for tc in tcs)
+    assert '"kind": "edit"' in blobs
+    assert ".md" not in blobs  # the claim's file was never written
+
+
 def test_unknown_defect_is_usage_error(tmp_path):
     assert main(["unit", "--out", str(tmp_path), "--defect", "D99"]) == 2
 

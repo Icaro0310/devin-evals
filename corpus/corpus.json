@@ -87,6 +87,15 @@
       "sessions_db": "sessions.db",
       "expected_status": "fail",
       "known_gap": null
+    },
+    {
+      "file": "evals/golden-d10-docs-claim-no-write.json",
+      "id": "golden-d10-docs-claim-no-write",
+      "defect": "D10",
+      "session_ref": "dream-d10",
+      "sessions_db": "sessions.db",
+      "expected_status": "fail",
+      "known_gap": null
     }
   ],
   "known_gaps": {}

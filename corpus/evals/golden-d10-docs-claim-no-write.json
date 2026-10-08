@@ -1,0 +1,20 @@
+{
+  "id": "golden-d10-docs-claim-no-write",
+  "description": "Agent claims 'README.md updated' but the only recorded edit touches src/feature.py — no *.md write exists in the tool record. Unlike D01 the session *has* tool activity, so the gap is doc-specific. UNVERIFIED collapses to FAIL.",
+  "session_ref": "dream-d10",
+  "synthetic": true,
+  "defect": "D10",
+  "expected_verdict": "devin-qa-pack: UNVERIFIED",
+  "expected_status": "fail",
+  "rubric": [
+    {
+      "grader": "contains",
+      "text": "README"
+    },
+    {
+      "grader": "tool_called",
+      "name": "edit",
+      "args_substr": ".md"
+    }
+  ]
+}

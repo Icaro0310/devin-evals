@@ -85,6 +85,10 @@ checkable fact, not an LLM judgement call.
 | `file_exists` | `path` | — | filesystem; relative = under session `working_directory` |
 | `exit_code` | — | `value` (0), `mode` (`all`/`any`/`last`) | `"exit_code"` fields in `tool_call_update_json` |
 | `no_secrets` | — | — | transcript **and** tool-call JSON (secrets leak via args) |
+| `no_pii` | — | — | transcript + tool-call JSON (email, CPF) |
+| `tool_output` | `text` | `present` (false) | `tool_call_update_json` substring |
+| `regex` | `text` | `present` (false) | `tool_call_update_json` regex match |
+| `no_split_secrets` | — | — | seam-join of adjacent tool payloads |
 
 ### Report (`report.json`)
 

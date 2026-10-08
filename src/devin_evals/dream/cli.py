@@ -107,7 +107,7 @@ def add_dream_subcommands(sub) -> None:
     u = sub.add_parser("unit", help="one sessions.db + expected.json per defect")
     u.add_argument("--out", required=True)
     u.add_argument("--defect", nargs="+", default=["all"],
-                   help="defect ids or 'all' (unit covers D01-D06 + D09)")
+                   help="defect ids or 'all' (unit covers D01-D06 + D09-D10)")
     u.add_argument("--schema-version", type=int, default=None)
     u.add_argument("--seed", type=int, default=0xDEE4)
     u.set_defaults(func=_cmd_unit)

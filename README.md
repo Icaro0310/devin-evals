@@ -136,6 +136,7 @@ failing case, and a tool-call-ground-truth case.
 | `no_secrets` | zero secret-shaped strings (vendored devin-redact patterns) in transcript + tool JSON |
 | `no_pii` | zero PII-shaped strings (email, CPF) in transcript + tool JSON |
 | `tool_output` | `text` presence in tool-call output JSON (`present` inverts) |
+| `regex` | regex `text` match in tool-call output JSON (`present` inverts) |
 | `no_split_secrets` | no secret-shaped match spanning the seam of two tool payloads |
 
 ## Works with Devin alone (Devin-only mode)
@@ -189,7 +190,7 @@ public-documentation values — nothing real is ever generated or read.
 ### Golden corpus (EV-3)
 
 `devin-evals corpus` materializes and replays a deterministic corpus of
-**labeled synthetic sessions** — nine defect classes (D01–D09, generated
+**labeled synthetic sessions** — ten defect classes (D01–D10, generated
 by `devin_evals.dream`, the absorbed devin-dream catalogue) with a known
 verdict each — plus the matching `evals/*.json` cases whose rubrics
 encode those verdicts in gradable form. It is the CI gate that proves
