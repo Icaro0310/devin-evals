@@ -35,6 +35,17 @@ Use the tool's documented `--data-dir` or `--config-dir` flags for non-default l
 - **WSL:** treat it as a Linux machine — follow [README.linux.md](README.linux.md) inside it.
 - **Uninstall:** `uv tool uninstall <package>` (or `npm uninstall -g` for a Node.js tool) removes the CLI; delete `%APPDATA%\devin` to remove local data. No services or scheduled tasks are left behind.
 
+## Recurring runs (optional)
+
+_Weekly regression replay; corpus stays deterministic and offline._
+
+```powershell
+schtasks /create /tn "devin-evals" /tr "devin-evals run --sessions-db %APPDATA%\devin\cli\sessions.db" /sc daily /st 04:00 /f
+```
+
+Runs under your account — no admin needed. Adjust `/sc`/`/st` (or `/sc onlogon` for daemons) to taste.
+
+
 ## Troubleshooting
 
 - If a command is not found, reopen PowerShell and run `uv tool update-shell`.

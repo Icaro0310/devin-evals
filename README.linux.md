@@ -36,6 +36,17 @@ Use the tool's documented `--data-dir` or `--config-dir` flags for non-default l
 - **Permissions:** tools read Devin data under `$XDG_DATA_HOME/devin` and write only their own config/state — no root or sudo is required.
 - **Scheduling:** optional recurring work belongs to `systemd --user` timers or cron; installation never creates jobs.
 
+## Recurring runs (optional)
+
+_Weekly regression replay; corpus stays deterministic and offline._
+
+```cron
+0 6 * * 0 devin-evals run --sessions-db ~/.local/share/devin/cli/sessions.db
+```
+
+Equivalent `systemd --user` timer works too; enable lingering if it must run without a login session.
+
+
 ## Troubleshooting
 
 - If a command is not found, ensure the `uv` tools directory is on `PATH` and run `uv tool update-shell`.
