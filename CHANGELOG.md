@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- README gains the generated `Part of the DEVIN ecosystem` block
+  (track/nature/audience/interface rendered from the registry).
+
 - Graders `no_pii`, `tool_output` and `no_split_secrets`, closing the
   documented corpus gaps: D05 (PII in prompt — email + CPF patterns),
   D07 (injected instruction inside tool-call output JSON) and D09
