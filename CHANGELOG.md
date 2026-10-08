@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- README now prescribes the PyPI install (`uv tool install devin-evals` /
+  `pip install devin-evals`); the source-only `DIST-STATUS` banner is gone.
+
 - The inline `secrets-scan` job now calls the shared reusable workflow,
   which switches fixture handling from a blanket `fixtures` directory
   exclusion to hash-pinned `.secrets-scan-allow` entries.

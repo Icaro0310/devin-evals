@@ -70,6 +70,7 @@ and exited 0" — a fact, not an LLM judgement call.
 
 Requires Python ≥ 3.10 and `pipx` or `uv`. Per-OS setup lives in the platform guides: [Linux](README.linux.md) · [Personal Windows](README.windows.md) · [Corporate Windows](README.corporate-windows.md).
 
+From PyPI: `uv tool install devin-evals` or `pip install devin-evals`
 
 From a checkout: `pip install -e .`
 
