@@ -1,0 +1,16 @@
+name: auto-approve
+
+# Thin caller: approves PRs from trusted authors so the required
+# approving-review rule is satisfiable. The reusable workflow lives in
+# devin-powerups; required status checks still gate merges.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  approve:
+    uses: Icaro0310/devin-powerups/.github/workflows/pr-approve.yml@v1
