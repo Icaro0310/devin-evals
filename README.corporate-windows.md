@@ -13,7 +13,7 @@ Corporate Windows is a local-only environment: no Devin VM, QwenPaw, Slack depen
 Install the isolated Python CLI:
 
 ```powershell
-uv tool install "https://github.com/Icaro0310/devin-evals/archive/refs/heads/main.tar.gz"
+uv tool install "devin-evals"
 ```
 
 ## Devin paths
@@ -26,6 +26,17 @@ Use the tool's documented `--data-dir` or `--config-dir` flags for non-default l
 - Keep execution local; do not configure VM, QwenPaw, external compute or workload delegation.
 - Registry-declared external integrations remain optional and are not installed by this guide.
 - macOS is planned but not claimed as tested.
+
+## Corporate Windows specifics
+
+- **No admin rights needed:** `uv` and every tool install under `%LOCALAPPDATA%`/`%APPDATA%` — nothing writes to `Program Files`, the registry, or requires elevation.
+- **Proxy:** set `HTTPS_PROXY`/`HTTP_PROXY` before installing. Per session: `$env:HTTPS_PROXY="http://proxy:port"`; persistently: `setx HTTPS_PROXY "http://proxy:port"`. `uv`, `pip` and `npm` honor them.
+- **TLS inspection:** if the corporate proxy intercepts TLS, point the installer at the company CA bundle: `$env:REQUESTS_CA_BUNDLE="C:\path\corp-root.pem"`. Certificate errors at install time mean the proxy, not the package.
+- **Execution policy:** installed CLIs are real executables — `Set-ExecutionPolicy` only matters for `.ps1` scripts from a checkout; `-Scope CurrentUser RemoteSigned` suffices, no admin.
+- **Blocked installers:** if winget/Store are disabled by policy, `uv` installs as a standalone binary — download the GitHub release zip, extract to `%LOCALAPPDATA%\bin`, add it to PATH.
+- **Long paths:** keep checkout/install roots short (`C:\dev`) — MAX_PATH (260 chars) can still bite inside virtualenvs; `LongPathsEnabled` needs admin, short roots do not.
+- **EDR/antivirus:** if a scan kills the install, retry with an exclusion or ask IT to allowlist `%LOCALAPPDATA%\uv` and `%USERPROFILE%\.local\bin`. These tools never elevate or listen on the network by default.
+- **Offline/air-gapped:** `pip download <package> -d wheels\` on a connected machine, copy the folder, then `pip install --no-index --find-links wheels\` on the target (pure-Python tools; native deps need a matching platform wheel).
 
 ## Troubleshooting
 
