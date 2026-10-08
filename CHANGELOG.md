@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Graders `no_pii`, `tool_output` and `no_split_secrets`, closing the
+  documented corpus gaps: D05 (PII in prompt — email + CPF patterns),
+  D07 (injected instruction inside tool-call output JSON) and D09
+  (credential split across two tool payloads, detected by seam-spanning
+  joins). Corpus verification now reports 9/9 expectations matched.
 - `dream` subcommand group (`devin-evals dream unit|inject|fleet`) —
   absorbs the standalone `devin-dream` repository: deterministic synthetic
   Devin sessions with known verdicts (defects D01–D09).
