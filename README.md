@@ -1,5 +1,32 @@
 <div align="center">
 
+# devin-evals — MOVED
+
+**This repository was absorbed into the
+[`devin-assure`](https://github.com/Icaro0310/devin-assure) monorepo.**
+
+The code now lives at `packages/evals/` and the CLI is unchanged:
+`pip install devin-evals` / `uv tool install devin-evals` still
+installs the same package, now released from devin-assure.
+
+```bash
+# development moved
+git clone https://github.com/Icaro0310/devin-assure
+cd devin-assure/packages/evals
+```
+
+The repository is archived; open issues and PRs belong to devin-assure.
+History remains readable here for reference.
+
+</div>
+
+---
+
+<details>
+<summary>Original README (pre-archive)</summary>
+
+<div align="center">
+
 <img src="assets/banner.svg" alt="devin-evals" width="100%"/>
 
 <a href="https://github.com/Icaro0310/devin-evals/actions/workflows/tests.yml"><img src="https://github.com/Icaro0310/devin-evals/actions/workflows/tests.yml/badge.svg" alt="tests"/></a>
@@ -370,3 +397,5 @@ MIT — see [LICENSE](LICENSE).
 ---
 
 If this saved you debugging time, a ⭐ on the repo helps others find it.
+
+</details>
