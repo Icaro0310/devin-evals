@@ -21,7 +21,7 @@
 > Track: Verify · Nature: product  
 > For: QA engineers, AI engineers  
 > Interface: CLI / Python library  
-> Path: QA engineers · step 2/3 — after `devin-qa-pack`, before `poordjaevin`
+> Path: QA engineers · step 2/3 — after `devin-qa-pack`, before `devin-judge`
 <!-- DEVIN-ECO:END -->
 
 # devin-evals
